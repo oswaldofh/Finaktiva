@@ -17,32 +17,8 @@ namespace Finaktiva.Infrastructure.Persistences
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-
-            modelBuilder.Entity<EventType>(entity =>
-            {
-                entity.HasKey(x => x.Id);
-                entity.HasIndex(x => x.Name).IsUnique();
-
-                entity.Property(e => e.Name)
-                    .IsRequired()
-                    .HasMaxLength(255);
-            });
-
-            modelBuilder.Entity<EventLog>(entity =>
-            {
-                entity.HasKey(x => x.Id);
-
-                entity.Property(e => e.Description)
-                    .IsRequired();
-
-                entity.HasOne(e => e.EventType)         
-                   .WithMany()                         
-                   .HasForeignKey(e => e.EventTypeId);
-
-                entity.Property(e => e.Date).IsRequired();
-            });
-
-
+            modelBuilder.Entity<EventType>().HasIndex(x => x.Name).IsUnique();
+            modelBuilder.Entity<EventLog>();
 
         }
 

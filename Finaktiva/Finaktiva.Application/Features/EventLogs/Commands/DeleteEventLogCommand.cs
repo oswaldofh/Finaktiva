@@ -2,12 +2,12 @@
 using MediatR;
 using System.ComponentModel.DataAnnotations;
 
-namespace Application.Features.EventTypes.Commands
+namespace Application.Features.EventLogs.Commands
 {
-    public class DeleteEventTypeCommand : IRequest<Response<bool>>
+    public class DeleteEventLogCommand : IRequest<Response<bool>>
     {
         [Required]
         public int Id { get; set; }
-        public DeleteEventTypeCommand(int id) => Id = id;
+        public DeleteEventLogCommand(int id) => Id = id;
     }
 }

@@ -1,10 +1,29 @@
-using Finaktiva.Infrastructure;
+using Finaktiva.Api.Extensions;
+using Finaktiva.Api.Middleware;
 using Finaktiva.Application;
+using Finaktiva.Infrastructure;
+using Microsoft.AspNetCore.Mvc;
 
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers();
+builder.Services.Configure<ApiBehaviorOptions>(options =>
+{
+    options.SuppressModelStateInvalidFilter = true;
+});
+
+// Desactiva el filtro de validación automática
+builder.Services.Configure<ApiBehaviorOptions>(options =>
+{
+    options.SuppressModelStateInvalidFilter = true;
+});
+
+//builder.Services.AddControllers();
+builder.Services.AddControllers(options =>
+{
+    options.Filters.Add<ValidateModelAttribute>();
+});
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -14,13 +33,12 @@ builder.Services.AddInfrastructure(builder.Configuration);
 //PARA ACCEDER A LA URL DE APLICACION
 builder.Services.AddHttpContextAccessor();
 
-//SE HABILITAN LOS CORS
 builder.Services.AddCors(o =>
 {
     o.AddPolicy("AllowSpecificOrigin",
     builder => builder
-    .WithOrigins("http://localhost:3000") // El origen de tu frontend
-    .WithOrigins("http://localhost:26367")
+    .WithOrigins("http://localhost:3000")
+    .WithOrigins("http://localhost:4200")
     .AllowAnyMethod()
     .AllowAnyHeader()
     .AllowCredentials());
@@ -33,6 +51,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+await app.ApplyMigration();
+//app.SeedData();
 
 app.UseAuthorization();
 app.MapControllers();

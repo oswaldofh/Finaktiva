@@ -22,23 +22,24 @@ namespace Finaktiva.Infrastructure.Repositories
                 await _context.SaveChangesAsync();
                 return entity;
             }
-            catch (Exception ex)
+            catch (DbUpdateException ex)
             {
-                throw ex;
+                throw new DbUpdateException("Ocurrio una excepcion al guardar la entidad", ex);
             }
 
         }
         public T Add(T entity)
         {
+
             try
             {
                 _context.Set<T>().Add(entity);
                 _context.SaveChanges();
                 return entity;
             }
-            catch (Exception ex)
+            catch (DbUpdateException ex)
             {
-                throw ex;
+                throw new DbUpdateException("Ocurrio una excepcion al guardar la entidad", ex);
             }
 
         }

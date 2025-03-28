@@ -2,51 +2,52 @@
 using Finaktiva.Application.Abstractions;
 using Finaktiva.Application.Contracts.IUnitOfWorks;
 using Finaktiva.Application.Models.ViewModels.EventLogs;
-using Finaktiva.Application.Models.ViewModels.EventTypes;
 using Finaktiva.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using Microsoft.Win32;
-using System.Data;
 
-namespace Application.Features.EventTypes.Commands
+namespace Application.Features.EventLogs.Commands
 {
-    public class AddEventTypeCommandHandler : IRequestHandler<AddEventTypeCommand, Response<EventTypeVm>>
+    public class AddEventLogCommandHandler : IRequestHandler<AddEventLogCommand, Response<EventLogVm>>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-        private readonly ILogger<AddEventTypeCommandHandler> _logger;
+        private readonly ILogger<AddEventLogCommandHandler> _logger;
 
 
-        public AddEventTypeCommandHandler(IUnitOfWork unitOfWork, IMapper mapper, ILogger<AddEventTypeCommandHandler> logger)
+        public AddEventLogCommandHandler(IUnitOfWork unitOfWork, IMapper mapper, ILogger<AddEventLogCommandHandler> logger)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _logger = logger;
         }
-        public async Task<Response<EventTypeVm>> Handle(AddEventTypeCommand request, CancellationToken cancellationToken)
-        {
-            var eventType = _mapper.Map<EventType>(request);
-            var name = request.GetType().Name;
 
+        public ILogger<AddEventLogCommandHandler> Logger { get; }
+
+        public async Task<Response<EventLogVm>> Handle(AddEventLogCommand request, CancellationToken cancellationToken)
+        {
+            var reventLog = _mapper.Map<EventLog>(request);
+            var name = request.GetType().Name;
+           
             try
             {
-                await _unitOfWork.Repository<EventType>().AddAsync(eventType);
+                await _unitOfWork.Repository<EventLog>().AddAsync(reventLog);
                 _logger.LogInformation($"El comando {name} se ejecuta exitosamente");
 
-                var eventLogVm = _mapper.Map<EventTypeVm>(eventType);
+                var reventLogVm = _mapper.Map<EventLogVm>(reventLog);
 
-                return Response<EventTypeVm>.SuccessResponse(
-                    data: eventLogVm,
+                return Response<EventLogVm>.SuccessResponse(
+                    data: reventLogVm,
                     StatusCodes.Status201Created,
                     message: "Se guarda el registro exitosamente"
                 );
+               
             }
             catch (UnauthorizedAccessException ex)
             {
                 _logger.LogError(ex.Message, ex, $"El commando {name} tuvo errores");
-                return Response<EventTypeVm>.ErrorResponse(
+                return Response<EventLogVm>.ErrorResponse(
                     $"Acceso no autorizado {ex.Message}",
                     StatusCodes.Status401Unauthorized
                 );
@@ -54,13 +55,11 @@ namespace Application.Features.EventTypes.Commands
             catch (Exception ex)
             {
                 _logger.LogError(ex.Message, ex, $"El commando {name} tuvo errores");
-                return Response<EventTypeVm>.ErrorResponse(
+                return Response<EventLogVm>.ErrorResponse(
                     $"Error interno: {ex.InnerException.Message}",
                     StatusCodes.Status500InternalServerError
                 );
             }
         }
-
-       
     }
 }

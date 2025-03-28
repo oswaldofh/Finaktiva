@@ -1,51 +1,52 @@
 ﻿using AutoMapper;
 using Finaktiva.Application.Abstractions;
 using Finaktiva.Application.Contracts.IUnitOfWorks;
-using Finaktiva.Application.Models.ViewModels.EventTypes;
+using Finaktiva.Application.Models.ViewModels.EventLogs;
 using Finaktiva.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 
-namespace Application.Features.EventTypes.Commands
+namespace Application.Features.EventLogs.Commands
 {
-    public class UpdateEventTypeCommandHandler : IRequestHandler<UpdateEventTypeCommand, Response<EventTypeVm>>
+    public class UpdateEventLogCommandHandler : IRequestHandler<UpdateEventLogCommand, Response<EventLogVm>>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-        private readonly ILogger<UpdateEventTypeCommandHandler> _logger;
+        private readonly ILogger<UpdateEventLogCommandHandler> _logger;
 
-        public UpdateEventTypeCommandHandler(IUnitOfWork unitOfWork, IMapper mapper, ILogger<UpdateEventTypeCommandHandler> logger)
+        public UpdateEventLogCommandHandler(IUnitOfWork unitOfWork, IMapper mapper, ILogger<UpdateEventLogCommandHandler> logger)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _logger = logger;
         }
-        public async Task<Response<EventTypeVm>> Handle(UpdateEventTypeCommand request, CancellationToken cancellationToken)
+        public async Task<Response<EventLogVm>> Handle(UpdateEventLogCommand request, CancellationToken cancellationToken)
         {
             var name = request.GetType().Name;
 
             try
             {
-                var eventType = await _unitOfWork.Repository<EventType>().GetFirstOrDefaultAsync(x => x.Id == request.Id);
-                if (eventType is null)
+                var eventLog = await _unitOfWork.Repository<EventLog>().GetFirstOrDefaultAsync(x => x.Id == request.Id);
+                if (eventLog is null)
                 {
-                    return Response<EventTypeVm>.NoFoundResponse(
+                    return Response<EventLogVm>.NoFoundResponse(
                       message: $"No se encontro un registro con el id {request.Id}",
                       statusCode: StatusCodes.Status404NotFound
                    );
                 }
 
-                eventType.Name = request.Name;
-                eventType.IsActive = request.IsActive;
+                eventLog.Description = request.Description;
+                eventLog.Date = request.Date;
+                eventLog.EventTypeId = request.EventTypeId;
 
                 await _unitOfWork.Complete();
 
                 _logger.LogInformation($"El comando {name} se ejecuta exitosamente");
 
-                var reventLogVm = _mapper.Map<EventTypeVm>(eventType);
+                var reventLogVm = _mapper.Map<EventLogVm>(eventLog);
 
-                return Response<EventTypeVm>.SuccessResponse(
+                return Response<EventLogVm>.SuccessResponse(
                     data: reventLogVm,
                     message: "Registro actualizado exitosamente"
                 );
@@ -53,18 +54,19 @@ namespace Application.Features.EventTypes.Commands
             }
             catch (UnauthorizedAccessException ex)
             {
-                return Response<EventTypeVm>.ErrorResponse(
+                return Response<EventLogVm>.ErrorResponse(
                     $"Acceso no autorizado: {ex.Message}",
                     StatusCodes.Status401Unauthorized
                 );
             }
             catch (Exception ex)
             {
-                return Response<EventTypeVm>.ErrorResponse(
+                return Response<EventLogVm>.ErrorResponse(
                     $"Error interno: {ex.InnerException.Message}",
                     StatusCodes.Status500InternalServerError
                 );
             }
+
         }
     }
 }

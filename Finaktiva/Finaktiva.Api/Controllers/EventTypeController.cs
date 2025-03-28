@@ -1,9 +1,10 @@
 ﻿using Application.Features.EventTypes.Commands;
 using Application.Features.EventTypes.Queries;
+using Finaktiva.Api.Helper;
+using Finaktiva.Application.Abstractions;
 using Finaktiva.Application.Models.ViewModels.EventTypes;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using System.Net;
 
 namespace Finaktiva.Api.Controllers
 {
@@ -22,10 +23,8 @@ namespace Finaktiva.Api.Controllers
         /// Listado de todos registros
         /// </summary>
         [HttpGet]
-        [ProducesResponseType(typeof(IEnumerable<EventTypeVm>), (int)HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(int), (int)HttpStatusCode.NotFound)]
-        public async Task<IEnumerable<EventTypeVm>> GetAll()
-           => await _mediator.Send(new GetAllEventTypeCommand());
+        public async Task<IActionResult> GetAll()
+           => (await _mediator.Send(new GetAllEventTypeCommand())).ToActionResult();
 
 
         /// <summary>
@@ -33,10 +32,11 @@ namespace Finaktiva.Api.Controllers
         /// </summary>
         /// <param name="id"></param>
         [HttpGet("{id:int}")]
-        [ProducesResponseType(typeof(EventTypeVm), (int)HttpStatusCode.OK)]
-        [ProducesDefaultResponseType]
-        public async Task<ActionResult<EventTypeVm>> GetById(int id)
-            => Ok(await _mediator.Send(new GetEventTypeByIdCommand(id)));
+        [ProducesResponseType(typeof(Response<EventTypeVm>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Response<EventTypeVm>), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(Response<EventTypeVm>), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetById(int id)
+            => (await _mediator.Send(new GetEventTypeByIdCommand(id))).ToActionResult();
 
 
         /// <summary>
@@ -44,10 +44,11 @@ namespace Finaktiva.Api.Controllers
         /// </summary>
         /// <param name="command"></param>
         [HttpPost]
-        [ProducesResponseType(typeof(EventTypeVm), (int)HttpStatusCode.Created)]
-        [ProducesDefaultResponseType]
-        public async Task<ActionResult<EventTypeVm>> Create([FromBody] AddEventTypeCommand command)
-           => Ok(await _mediator.Send(command));
+        [ProducesResponseType(typeof(Response<EventTypeVm>), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(Response<EventTypeVm>), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> Create([FromBody] AddEventTypeCommand command)
+           => (await _mediator.Send(command)).ToActionResult();
+
         //=> Ok(await _mediator.Send(command.GetUserData(Request.Headers)));
 
         /// <summary>
@@ -55,19 +56,21 @@ namespace Finaktiva.Api.Controllers
         /// </summary>
         /// <param name="command"></param>
         [HttpPut]
-        [ProducesResponseType(typeof(EventTypeVm), (int)HttpStatusCode.OK)]
-        [ProducesDefaultResponseType]
-        public async Task<ActionResult<EventTypeVm>> Update([FromBody] UpdateEventTypeCommand command)
-           => Ok(await _mediator.Send(command));
+        [ProducesResponseType(typeof(Response<EventTypeVm>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Response<EventTypeVm>), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(Response<EventTypeVm>), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> Update([FromBody] UpdateEventTypeCommand command)
+           => (await _mediator.Send(command)).ToActionResult();
 
         /// <summary>
         /// Se elimina un registro pasando el id por parametro
         /// </summary>
         /// <param name="id"></param>
         [HttpDelete("{id:int}")]
-        [ProducesResponseType(typeof(bool), (int)HttpStatusCode.OK)]
-        [ProducesDefaultResponseType]
-        public async Task<ActionResult<bool>> DeleteById(int id)
-            => Ok(await _mediator.Send(new DeleteEventTypeCommand(id)));
+        [ProducesResponseType(typeof(Response<EventTypeVm>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Response<EventTypeVm>), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(Response<EventTypeVm>), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> DeleteById(int id)
+            => (await _mediator.Send(new DeleteEventTypeCommand(id))).ToActionResult();
     }
 }

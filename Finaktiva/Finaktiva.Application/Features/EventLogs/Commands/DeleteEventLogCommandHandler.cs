@@ -4,28 +4,28 @@ using Finaktiva.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using System.Data;
 
-namespace Application.Features.EventTypes.Commands
+namespace Application.Features.EventLogs.Commands
 {
-    public class DeleteEventTypeCommandHandler : IRequestHandler<DeleteEventTypeCommand, Response<bool>>
+    public class DeleteEventLogCommandHandler : IRequestHandler<DeleteEventLogCommand, Response<bool>>
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly ILogger<DeleteEventTypeCommandHandler> _logger;
+        private readonly ILogger<DeleteEventLogCommandHandler> _logger;
 
-        public DeleteEventTypeCommandHandler(IUnitOfWork unitOfWork, ILogger<DeleteEventTypeCommandHandler> logger)
+        public DeleteEventLogCommandHandler(IUnitOfWork unitOfWork, ILogger<DeleteEventLogCommandHandler> logger)
         {
             _unitOfWork = unitOfWork;
             _logger = logger;
         }
-        public async Task<Response<bool>> Handle(DeleteEventTypeCommand request, CancellationToken cancellationToken)
+        public async Task<Response<bool>> Handle(DeleteEventLogCommand request, CancellationToken cancellationToken)
         {
             var name = request.GetType().Name;
+
             try
             {
-                var eventType = await _unitOfWork.Repository<EventType>().GetByIdAsync(request.Id);
+                var reventLog = await _unitOfWork.Repository<EventLog>().GetByIdAsync(request.Id);
 
-                if (eventType is null)
+                if (reventLog is null)
                 {
                     return Response<bool>.NoFoundResponse(
                        message: $"No se encontro un registro con el id {request.Id}",
@@ -33,7 +33,7 @@ namespace Application.Features.EventTypes.Commands
                     );
                 }
 
-                await _unitOfWork.Repository<EventType>().DeleteAsync(eventType);
+                await _unitOfWork.Repository<EventLog>().DeleteAsync(reventLog);
                 _logger.LogInformation($"El comando {name} se ejecuta exitosamente");
 
                 return Response<bool>.SuccessResponse(

@@ -1,7 +1,10 @@
-﻿namespace Finaktiva.Domain.Common
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Finaktiva.Domain.Common
 {
     public class Entity
     {
+        [Key]
         public int Id { get; set; }
         public Guid? CreateById { get; set; }
         public DateTime? CreatedDate { get; set; }
