@@ -1,0 +1,63 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.10.35013.160
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{79F63B34-2F35-49AF-AAAE-3156112D7938}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Finaktiva.Domain", "Finaktiva.Domain\Finaktiva.Domain.csproj", "{1EC662F8-A8EB-4670-B358-9EBE00BFE966}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Finaktiva.Api", "Finaktiva.Api\Finaktiva.Api.csproj", "{5215A7E2-1578-446F-B56E-3909106677A2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Finaktiva.Application", "Finaktiva.Application\Finaktiva.Application.csproj", "{103721E5-7984-4F9C-9C09-886B1BB059D0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Finaktiva.Infrastructure", "Finaktiva.Infrastructure\Finaktiva.Infrastructure.csproj", "{EDF1390D-3CE2-49DB-8F4C-8CC0F858782B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Finaktiva.Api", "Finaktiva.Api", "{6BBCBC42-454B-4478-AFEB-E05725812019}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Finaktiva.Application", "Finaktiva.Application", "{2093D56B-3C30-4903-91D3-3BAE6BEC2519}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Finaktiva.Domain", "Finaktiva.Domain", "{18797328-6DFF-405B-BC94-091F4BA3C175}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Finaktiva.Infrastructure", "Finaktiva.Infrastructure", "{D78B8B83-F6A9-43A5-9AD1-830536228787}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1EC662F8-A8EB-4670-B358-9EBE00BFE966}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1EC662F8-A8EB-4670-B358-9EBE00BFE966}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1EC662F8-A8EB-4670-B358-9EBE00BFE966}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1EC662F8-A8EB-4670-B358-9EBE00BFE966}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5215A7E2-1578-446F-B56E-3909106677A2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5215A7E2-1578-446F-B56E-3909106677A2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5215A7E2-1578-446F-B56E-3909106677A2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5215A7E2-1578-446F-B56E-3909106677A2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{103721E5-7984-4F9C-9C09-886B1BB059D0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{103721E5-7984-4F9C-9C09-886B1BB059D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{103721E5-7984-4F9C-9C09-886B1BB059D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{103721E5-7984-4F9C-9C09-886B1BB059D0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EDF1390D-3CE2-49DB-8F4C-8CC0F858782B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EDF1390D-3CE2-49DB-8F4C-8CC0F858782B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EDF1390D-3CE2-49DB-8F4C-8CC0F858782B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EDF1390D-3CE2-49DB-8F4C-8CC0F858782B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{1EC662F8-A8EB-4670-B358-9EBE00BFE966} = {18797328-6DFF-405B-BC94-091F4BA3C175}
+		{5215A7E2-1578-446F-B56E-3909106677A2} = {6BBCBC42-454B-4478-AFEB-E05725812019}
+		{103721E5-7984-4F9C-9C09-886B1BB059D0} = {2093D56B-3C30-4903-91D3-3BAE6BEC2519}
+		{EDF1390D-3CE2-49DB-8F4C-8CC0F858782B} = {D78B8B83-F6A9-43A5-9AD1-830536228787}
+		{6BBCBC42-454B-4478-AFEB-E05725812019} = {79F63B34-2F35-49AF-AAAE-3156112D7938}
+		{2093D56B-3C30-4903-91D3-3BAE6BEC2519} = {79F63B34-2F35-49AF-AAAE-3156112D7938}
+		{18797328-6DFF-405B-BC94-091F4BA3C175} = {79F63B34-2F35-49AF-AAAE-3156112D7938}
+		{D78B8B83-F6A9-43A5-9AD1-830536228787} = {79F63B34-2F35-49AF-AAAE-3156112D7938}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {6749B90C-69CF-49B0-A5ED-92A5B16DB1D1}
+	EndGlobalSection
+EndGlobal
