@@ -37,14 +37,17 @@ builder.Services.AddCors(o =>
 {
     o.AddPolicy("AllowSpecificOrigin",
     builder => builder
-    .WithOrigins("http://localhost:3000")
     .WithOrigins("http://localhost:4200")
+    .WithOrigins("http://localhost:3000")
     .AllowAnyMethod()
     .AllowAnyHeader()
     .AllowCredentials());
 });
 
 var app = builder.Build();
+
+//HABILITAR LOS CORS PARA ACCEDER A LA API
+app.UseCors("AllowSpecificOrigin");
 
 if (app.Environment.IsDevelopment())
 {
