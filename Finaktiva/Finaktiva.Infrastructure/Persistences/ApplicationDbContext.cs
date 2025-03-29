@@ -10,8 +10,10 @@ namespace Finaktiva.Infrastructure.Persistences
         {
         }
 
+
         public DbSet<EventType> EventTypes { get; set; }
         public DbSet<EventLog> EventLogs { get; set; }
+        public DbSet<ExcepcionLog> ExcepcionLogs { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -19,7 +21,7 @@ namespace Finaktiva.Infrastructure.Persistences
             base.OnModelCreating(modelBuilder);
             modelBuilder.Entity<EventType>().HasIndex(x => x.Name).IsUnique();
             modelBuilder.Entity<EventLog>();
-
+            modelBuilder.Entity<ExcepcionLog>();
         }
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)

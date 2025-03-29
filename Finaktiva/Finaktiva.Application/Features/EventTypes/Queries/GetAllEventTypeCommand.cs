@@ -5,6 +5,6 @@ using MediatR;
 namespace Application.Features.EventTypes.Queries
 {
     public class GetAllEventTypeCommand : IRequest<Response<IEnumerable<EventTypeVm>>>
-    {
+    {  
     }
 }

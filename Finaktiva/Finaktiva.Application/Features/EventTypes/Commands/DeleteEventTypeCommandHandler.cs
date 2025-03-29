@@ -5,6 +5,7 @@ using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using System.Data;
+using System.Text.Json;
 
 namespace Application.Features.EventTypes.Commands
 {
@@ -45,6 +46,15 @@ namespace Application.Features.EventTypes.Commands
             }
             catch (UnauthorizedAccessException ex)
             {
+                _logger.LogError(ex.InnerException.Message, ex, $"El commando {name} tuvo errores");
+                var exception = new ExcepcionLog
+                {
+                    Date = DateTime.UtcNow,
+                    Name = name,
+                    Description = ex.InnerException?.Message ?? ex.Message,
+                    StackTrace = ex.StackTrace
+                };
+                await _unitOfWork.Repository<ExcepcionLog>().AddAsync(exception);
                 return Response<bool>.ErrorResponse(
                     $"Acceso no autorizado: {ex.Message}",
                     StatusCodes.Status401Unauthorized
@@ -52,6 +62,15 @@ namespace Application.Features.EventTypes.Commands
             }
             catch (Exception ex)
             {
+                /*_logger.LogError(ex.Message, ex, $"El commando {name} tuvo errores");
+                var exception = new ExcepcionLog
+                {
+                    Date = DateTime.UtcNow,
+                    Name = name,
+                    Description = ex.InnerException?.Message ?? ex.Message,
+                    StackTrace = ex.StackTrace
+                };
+                await _unitOfWork.Repository<ExcepcionLog>().AddAsync(exception);*/
                 return Response<bool>.ErrorResponse(
                     $"Error interno: {ex.InnerException.Message}",
                     StatusCodes.Status500InternalServerError

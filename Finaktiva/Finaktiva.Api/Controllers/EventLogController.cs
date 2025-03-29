@@ -23,8 +23,8 @@ namespace Finaktiva.Api.Controllers
         /// Listado de todos registros
         /// </summary>
         [HttpGet]
-        public async Task<IActionResult> GetAll()
-           => (await _mediator.Send(new GetAllEventLogCommand())).ToActionResult();
+        public async Task<IActionResult> GetAll([FromQuery] GetAllEventLogCommand query)
+           => (await _mediator.Send(query)).ToActionResult();
 
 
         /// <summary>
@@ -47,7 +47,7 @@ namespace Finaktiva.Api.Controllers
         [ProducesResponseType(typeof(Response<EventLogVm>), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(Response<EventLogVm>), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Create([FromBody] AddEventLogCommand command)
-           => (await _mediator.Send(command)).ToActionResult();
+           => (await _mediator.Send(command)).ToActionResult(); 
 
         //=> Ok(await _mediator.Send(command.GetUserData(Request.Headers)));
 

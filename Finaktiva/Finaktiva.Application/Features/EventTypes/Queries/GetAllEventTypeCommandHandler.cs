@@ -6,6 +6,7 @@ using Finaktiva.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using System.Text.Json;
 
 namespace Application.Features.EventTypes.Queries
 {
@@ -35,6 +36,15 @@ namespace Application.Features.EventTypes.Queries
             }
             catch (UnauthorizedAccessException ex)
             {
+                _logger.LogError(ex.Message, ex, $"El commando {name} tuvo errores");
+                var exception = new ExcepcionLog
+                {
+                    Date = DateTime.UtcNow,
+                    Name = name,
+                    Description = ex.InnerException?.Message ?? ex.Message,
+                    StackTrace = ex.StackTrace
+                };
+                await _unitOfWork.Repository<ExcepcionLog>().AddAsync(exception);
                 return Response<IEnumerable<EventTypeVm>>.ErrorResponse(
                     $"Acceso no autorizado {ex.Message}",
                     StatusCodes.Status401Unauthorized
@@ -42,6 +52,15 @@ namespace Application.Features.EventTypes.Queries
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex.Message, ex, $"El commando {name} tuvo errores");
+                var exception = new ExcepcionLog
+                {
+                    Date = DateTime.UtcNow,
+                    Name = name,
+                    Description = ex.InnerException?.Message ?? ex.Message,
+                    StackTrace = ex.StackTrace
+                };
+                await _unitOfWork.Repository<ExcepcionLog>().AddAsync(exception);
                 return Response<IEnumerable<EventTypeVm>>.ErrorResponse(
                     $"Error interno: {ex.InnerException.Message}",
                     StatusCodes.Status500InternalServerError

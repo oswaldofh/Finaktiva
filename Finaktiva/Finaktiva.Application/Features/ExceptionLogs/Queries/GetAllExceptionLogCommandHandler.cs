@@ -1,49 +1,38 @@
 ﻿using AutoMapper;
 using Finaktiva.Application.Abstractions;
 using Finaktiva.Application.Contracts.IUnitOfWorks;
-using Finaktiva.Application.Models.ViewModels.EventLogs;
-using Finaktiva.Application.Models.ViewModels.EventTypes;
+using Finaktiva.Application.Models.ViewModels;
 using Finaktiva.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using Microsoft.Win32;
-using System.ComponentModel.DataAnnotations;
-using System.Data;
 using System.Text.Json;
 
-namespace Application.Features.EventTypes.Commands
+namespace Application.Features.ExceptionLogs.Queries
 {
-    public class AddEventTypeCommandHandler : IRequestHandler<AddEventTypeCommand, Response<EventTypeVm>>
+    public class GetAllExceptionLogCommandHandler : IRequestHandler<GetAllExceptionLogCommand, Response<IEnumerable<ExceptionLogVm>>>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-        private readonly ILogger<AddEventTypeCommandHandler> _logger;
+        private readonly ILogger<GetAllExceptionLogCommandHandler> _logger;
 
-
-        public AddEventTypeCommandHandler(IUnitOfWork unitOfWork, IMapper mapper, ILogger<AddEventTypeCommandHandler> logger)
+        public GetAllExceptionLogCommandHandler(IUnitOfWork unitOfWork, IMapper mapper, ILogger<GetAllExceptionLogCommandHandler> logger)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _logger = logger;
         }
-        public async Task<Response<EventTypeVm>> Handle(AddEventTypeCommand request, CancellationToken cancellationToken)
+        public async Task<Response<IEnumerable<ExceptionLogVm>>> Handle(GetAllExceptionLogCommand request, CancellationToken cancellationToken)
         {
-            var eventType = _mapper.Map<EventType>(request);
             var name = request.GetType().Name;
-
             try
             {
-                await _unitOfWork.Repository<EventType>().AddAsync(eventType);
+                var list = await _unitOfWork.Repository<ExcepcionLog>().GetAllAsync();
                 _logger.LogInformation($"El comando {name} se ejecuta exitosamente");
 
-                var eventLogVm = _mapper.Map<EventTypeVm>(eventType);
+                var result = _mapper.Map<List<ExceptionLogVm>>(list);
 
-                return Response<EventTypeVm>.SuccessResponse(
-                    data: eventLogVm,
-                    StatusCodes.Status201Created,
-                    message: "Se guarda el registro exitosamente"
-                );
+                return Response<IEnumerable<ExceptionLogVm>>.SuccessResponse(result);
             }
             catch (UnauthorizedAccessException ex)
             {
@@ -54,10 +43,10 @@ namespace Application.Features.EventTypes.Commands
                     Name = name,
                     Description = ex.InnerException?.Message ?? ex.Message,
                     StackTrace = ex.StackTrace
+
                 };
                 await _unitOfWork.Repository<ExcepcionLog>().AddAsync(exception);
-
-                return Response<EventTypeVm>.ErrorResponse(
+                return Response<IEnumerable<ExceptionLogVm>>.ErrorResponse(
                     $"Acceso no autorizado {ex.Message}",
                     StatusCodes.Status401Unauthorized
                 );
@@ -65,23 +54,20 @@ namespace Application.Features.EventTypes.Commands
             catch (Exception ex)
             {
                 _logger.LogError(ex.Message, ex, $"El commando {name} tuvo errores");
-                
                 var exception = new ExcepcionLog
                 {
                     Date = DateTime.UtcNow,
                     Name = name,
                     Description = ex.InnerException?.Message ?? ex.Message,
                     StackTrace = ex.StackTrace
+
                 };
                 await _unitOfWork.Repository<ExcepcionLog>().AddAsync(exception);
-
-                return Response<EventTypeVm>.ErrorResponse(
+                return Response<IEnumerable<ExceptionLogVm>>.ErrorResponse(
                     $"Error interno: {ex.InnerException.Message}",
                     StatusCodes.Status500InternalServerError
                 );
             }
         }
-
-       
     }
 }

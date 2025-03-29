@@ -49,11 +49,8 @@ var app = builder.Build();
 //HABILITAR LOS CORS PARA ACCEDER A LA API
 app.UseCors("AllowSpecificOrigin");
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+app.UseSwagger();
+app.UseSwaggerUI();
 
 await app.ApplyMigration();
 //app.SeedData();

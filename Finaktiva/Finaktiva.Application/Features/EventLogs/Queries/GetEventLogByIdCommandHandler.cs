@@ -2,10 +2,12 @@
 using Finaktiva.Application.Abstractions;
 using Finaktiva.Application.Contracts.IUnitOfWorks;
 using Finaktiva.Application.Models.ViewModels.EventLogs;
+using Finaktiva.Application.Specifications;
 using Finaktiva.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using System.Text.Json;
 
 namespace Application.Features.EventLogs.Queries
 {
@@ -23,9 +25,10 @@ namespace Application.Features.EventLogs.Queries
         public async Task<Response<EventLogVm>> Handle(GetEventLogByIdCommand request, CancellationToken cancellationToken)
         {
             var name = request.GetType().Name;
+            var spec = new EventLogSpecification();
             try
             {
-                var reventLog = await _unitOfWork.Repository<EventLog>().GetByIdAsync(request.Id);
+                var reventLog = await _unitOfWork.Repository<EventLog>().GetByIdWithSpec(spec);
                 _logger.LogInformation($"El comando {name} se ejecuta exitosamente");
 
                 if(reventLog is null)
@@ -43,6 +46,15 @@ namespace Application.Features.EventLogs.Queries
             }
             catch (UnauthorizedAccessException ex)
             {
+                _logger.LogError(ex.Message, ex, $"El commando {name} tuvo errores");
+                var exception = new ExcepcionLog
+                {
+                    Date = DateTime.UtcNow,
+                    Name = name,
+                    Description = ex.InnerException?.Message ?? ex.Message,
+                    StackTrace = ex.StackTrace
+                };
+                await _unitOfWork.Repository<ExcepcionLog>().AddAsync(exception);
                 return Response<EventLogVm>.ErrorResponse(
                     $"Acceso no autorizado: {ex.Message}",
                     StatusCodes.Status401Unauthorized
@@ -50,6 +62,15 @@ namespace Application.Features.EventLogs.Queries
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex.Message, ex, $"El commando {name} tuvo errores");
+                var exception = new ExcepcionLog
+                {
+                    Date = DateTime.UtcNow,
+                    Name = name,
+                    Description = ex.InnerException?.Message ?? ex.Message,
+                    StackTrace = ex.StackTrace
+                };
+                await _unitOfWork.Repository<ExcepcionLog>().AddAsync(exception);
                 return Response<EventLogVm>.ErrorResponse(
                     $"Error interno: {ex.InnerException.Message}",
                     StatusCodes.Status500InternalServerError
